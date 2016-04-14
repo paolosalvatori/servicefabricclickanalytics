@@ -15,12 +15,12 @@ This demo demonstrates how to build a highly scalable, highly reliable ingestion
 The following picture shows the architecture design of the application.
 <br/>
 <br/>
-![alt tag](https://github.com/Azure-Samples/service-fabric-dotnet-click-analytics/blob/master/Images/Architecture.png?raw=true)
+![alt tag](https://raw.githubusercontent.com/paolosalvatori/servicefabricclickanalytics/master/Images/Architecture.png)
 <br/>
 
 # Message Flow #
 1. A Windows Forms application is used to emulate a configurable amount of users sending events to the ingestion pipeline of the click analytics system.</br/>
-![alt tag](https://github.com/Azure-Samples/service-fabric-dotnet-click-analytics/blob/master/Images/Client.png?raw=true)
+![alt tag](https://raw.githubusercontent.com/paolosalvatori/servicefabricclickanalytics/master/Images/Client.png)
 <br/>
 The client application uses a separate Task to emulate each user. Each user session is composed by a series of JSON messages sent to the service endpoint of the click analytics ingestion pipeline:
 	- a special	session start event
@@ -28,13 +28,13 @@ The client application uses a separate Task to emulate each user. Each user sess
 	- a special session stop event
 2. The **PageViewtWebService** stateless service receives requests using the **POST** method. The body of the request is in **JSON** format, the **Content-Type** header is equal to application/json, while the custom userId header contains the user id. The payload contains the **userId** (cross check) and the **User Event**. The service writes events into an **Event Hub**. The **userId** is used as a value for the [EventData.PartitionKey](https://msdn.microsoft.com/en-us/library/microsoft.servicebus.messaging.eventdata.partitionkey.aspx) property. The **userid** is also stored in a custom **userId** property, while the **eventType** (start session, user event, stop session) is stored in another custom property of the [EventData](https://msdn.microsoft.com/en-us/library/microsoft.servicebus.messaging.eventdata.aspx) message. Note: this microservice uses a pool of [EventHubClient](https://msdn.microsoft.com/library/azure/microsoft.servicebus.messaging.eventhubclient.aspx) objects to increase the throughput of the ingestion pipeline.
 3. The **EventProcessorHostService** uses an **EventProcessorHost** listener to receive messages from the **Event Hub**.
-4. The **EventProcessorHostService** retrieves the **userId** and **eventType** from the [Properties](https://msdn.microsoft.com/en-us/library/microsoft.servicebus.messaging.eventdata.properties.aspx) collection of the [EventData](https://msdn.microsoft.com/en-us/library/microsoft.servicebus.messaging.eventdata.aspx) message and the payload from the message body, and uses a [CloudAppendBlob](https://msdn.microsoft.com/en-us/library/microsoft.windowsazure.storage.blob.cloudappendblob.aspx) object to write the event to a [Append Blob](https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/) inside a given storage container. <br/> The name is of the blob is **{userId}_{session_start_timestamp}.log**. <br/><br/>![alt tag](https://github.com/Azure-Samples/service-fabric-dotnet-click-analytics/blob/master/Images/Blobs.png?raw=true)<br/>
+4. The **EventProcessorHostService** retrieves the **userId** and **eventType** from the [Properties](https://msdn.microsoft.com/en-us/library/microsoft.servicebus.messaging.eventdata.properties.aspx) collection of the [EventData](https://msdn.microsoft.com/en-us/library/microsoft.servicebus.messaging.eventdata.aspx) message and the payload from the message body, and uses a [CloudAppendBlob](https://msdn.microsoft.com/en-us/library/microsoft.windowsazure.storage.blob.cloudappendblob.aspx) object to write the event to a [Append Blob](https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/) inside a given storage container. <br/> The name is of the blob is **{userId}_{session_start_timestamp}.log**. <br/><br/>![alt tag](https://raw.githubusercontent.com/paolosalvatori/servicefabricclickanalytics/master/Images/Blobs.png)<br/>
 <br/> When the it receives a stop session event, the microservice sends a **JSON** message to **Service Bus Queue**. The message contains the  **userId** and **uri** of the [Append Blob](https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/) containing the events of the user visit. The message is received and processed by an external hot path analytics system. You can use the [Service Bus Explorer](https://github.com/paolosalvatori/ServiceBusExplorer) to read messages from the **Service Bus Queue**, as shown in the following picture. <br/><br/>
-![alt tag](https://github.com/Azure-Samples/service-fabric-dotnet-click-analytics/blob/master/Images/QueueMessage.png?raw=true)
+![alt tag](https://raw.githubusercontent.com/paolosalvatori/servicefabricclickanalytics/master/Images/QueueMessage.png)
 <br/><br/>To monitor the message flow in real-time, you can create a test **Consumer Group** other than the one used by the application, and use the aaaaaaaa to create and run a **Consumer Group Listener**, as shown in the following picture.<br/><br/>
-![alt tag](https://github.com/Azure-Samples/service-fabric-dotnet-click-analytics/blob/master/Images/EventHub.png?raw=true)
+![alt tag](https://raw.githubusercontent.com/paolosalvatori/servicefabricclickanalytics/master/Images/EventHub.png)
 <br/><br/>Each **Append Blob** contains all the user events in **JSON** format tracked during the user session: <br/><br/>
-![alt tag](https://github.com/Azure-Samples/service-fabric-dotnet-click-analytics/blob/master/Images/BlobContent.png?raw=true)
+![alt tag](https://raw.githubusercontent.com/paolosalvatori/servicefabricclickanalytics/master/Images/BlobContent.png)
 <br/>
 
 # Service Fabric Application #
