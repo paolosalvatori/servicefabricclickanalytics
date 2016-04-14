@@ -1,0 +1,30 @@
+﻿// ------------------------------------------------------------
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
+// ------------------------------------------------------------
+
+#region Using Directives
+
+
+
+#endregion
+
+namespace Microsoft.AzureCat.Samples.Entities
+{
+    using Newtonsoft.Json;
+
+    public class Payload
+    {
+        /// <summary>
+        /// Gets or sets the user id.
+        /// </summary>
+        [JsonProperty(PropertyName = "id", Order = 1)]
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user event.
+        /// </summary>
+        [JsonProperty(PropertyName = "event", Order = 2)]
+        public UserEvent UserEvent { get; set; }
+    }
+}

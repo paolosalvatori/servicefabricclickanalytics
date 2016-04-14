@@ -1,0 +1,90 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+        "vmNamePrefix": {
+      "type": "string"
+    },
+        "applicationDiagnosticsStorageAccountName": {
+      "type": "string"
+    },
+        "vmCount": {
+            "type": "int"
+    }
+  },
+
+  "resources": [
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('vmNamePrefix'),copyIndex(0),'/Microsoft.Insights.VMDiagnosticsSettings')]",
+            "location": "[resourceGroup().location]",
+      "properties": {
+        "type": "IaaSDiagnostics",
+                "typeHandlerVersion": "1.5",
+        "publisher": "Microsoft.Azure.Diagnostics",
+                "autoUpgradeMinorVersion": true,
+        "settings": {
+                    "WadCfg": {
+                            "DiagnosticMonitorConfiguration": {
+                                            "overallQuotaInMB": "50000",
+                                "EtwProviders": {
+                                    "EtwEventSourceProviderConfiguration": [
+                                        {
+                                            "provider": "Microsoft-ServiceFabric-Actors",
+                                            "scheduledTransferKeywordFilter": "1",
+                                                        "scheduledTransferPeriod": "PT1M",
+                                            "DefaultEvents": { "eventDestination": "ServiceFabricReliableActorEventTable" }
+                                        },
+                                        {
+                                            "provider": "Microsoft-ServiceFabric-Services",
+                                            "DefaultEvents": { "eventDestination": "ServiceFabricReliableServiceEventTable" },
+                                                        "scheduledTransferPeriod": "PT1M"
+                                        },
+                                        {
+                                            "provider": "IoTDemo-DeviceActorService",
+                                                        "scheduledTransferPeriod": "PT1M",
+                                            "DefaultEvents": { "eventDestination": "ServiceFabricReliableActorEventTable" }
+                                        },
+                                        {
+                                            "provider": "IoTDemo-DeviceManagementWebService",
+                                            "DefaultEvents": { "eventDestination": "ServiceFabricReliableServiceEventTable" },
+                                                        "scheduledTransferPeriod": "PT1M"
+                                        },
+                                        {
+                                            "provider": "IoTDemo-EventProcessorHostService",
+                                            "DefaultEvents": { "eventDestination": "ServiceFabricReliableServiceEventTable" },
+                                                        "scheduledTransferPeriod": "PT1M"
+                                        }
+                                    ],
+                                    "EtwManifestProviderConfiguration": [
+                                        {
+                                            "provider": "cbd93bc2-71e5-4566-b3a7-595d8eeca6e8",
+                                            "scheduledTransferKeywordFilter": "4611686018427387904",
+                                                        "scheduledTransferLogLevelFilter": "Information",
+                                                        "scheduledTransferPeriod": "PT1M",
+                                            "DefaultEvents": { "eventDestination": "ServiceFabricSystemEventTable" }
+                                        }
+                                    ]
+                                }
+                            }
+                    },
+                    "StorageAccount": "[parameters('applicationDiagnosticsStorageAccountName')]"
+                },
+                "protectedSettings": {
+                    "storageAccountName": "[parameters('applicationDiagnosticsStorageAccountName')]",
+                    "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('applicationDiagnosticsStorageAccountName')),'2015-05-01-preview').key1]",
+                    "storageAccountEndPoint": "https://core.windows.net/"
+                }
+            },
+            "copy": {
+                "name": "vmExtensionLoop",
+                "count": "[parameters('vmCount')]"
+            }
+        }
+    ],
+
+    "outputs": {
+    }
+}

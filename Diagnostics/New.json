@@ -1,0 +1,500 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmNamePrefix": {
+      "type": "string"
+    },
+    "applicationDiagnosticsStorageAccountName": {
+      "type": "string"
+    },
+    "vmCount": {
+      "type": "int"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('vmNamePrefix'),copyIndex(0),'/Microsoft.Insights.VMDiagnosticsSettings')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "type": "IaaSDiagnostics",
+        "typeHandlerVersion": "1.5",
+        "publisher": "Microsoft.Azure.Diagnostics",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "WadCfg": {
+            "DiagnosticMonitorConfiguration": {
+              "overallQuotaInMB": "50000",
+              "DiagnosticInfrastructureLogs": {
+                "scheduledTransferPeriod": "PT1M",
+                "scheduledTransferLogLevelFilter": "Warning"
+              },
+              "PerformanceCounters": {
+                "scheduledTransferPeriod": "PT1M",
+                "PerformanceCounterConfiguration": [
+                  {
+                    "counterSpecifier": "\\Service Fabric Actor(*)\\# of actor calls waiting for actor lock",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Service Fabric Actor(*)\\Average milliseconds per save state operation",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Service Fabric Actor Method(*)\\Exceptions thrown/Sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Service Fabric Actor Method(*)\\Invocations/Sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Service Fabric Actor Method(*)\\Average milliseconds per invocation",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Processor(_Total)\\% Processor Time",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\Processor(_Total)\\% Interrupt Time",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\Processor(_Total)\\% Privileged Time",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\Processor Information(_Total)\\Parking Status",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Processor(_Total)\\% User Time",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\Processor Information(_Total)\\% Processor Performance",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Processor Information(_Total)\\Processor Frequency",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\System\\Threads",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\System\\Processes",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Thread(_Total)\\Context Switches/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Committed Bytes",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Available Bytes",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\% Committed Bytes In Use",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Cache Faults/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Page Faults/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Page Reads/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Pages/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Transition Faults/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Pool Paged Bytes",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\Memory\\Pool Nonpaged Bytes",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\Process(_Total)\\% Processor Time",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\Process(_Total)\\Page Faults/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Process(_Total)\\Thread Count",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Process(_Total)\\Handle Count",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Process(_Total)\\Private Bytes",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\Process(_Total)\\Working Set",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\Process(_Total)\\Working Set - Private",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\PhysicalDisk(_Total)\\Disk Read Bytes/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "BytesPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\PhysicalDisk(_Total)\\Disk Write Bytes/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "BytesPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Web Service(_Total)\\Bytes Total/Sec",
+                    "sampleRate": "PT15S",
+                    "unit": "BytesPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Web Service(_Total)\\ISAPI Extension Requests/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Web Service(_Total)\\Connection Attempts/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Web Service(_Total)\\Current Connections",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\Web Service(_Total)\\Get Requests/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\Web Service(_Total)\\Post Requests/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\TCPv4\\Connections Established",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\TCPv4\\Connection Failures",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\TCPv4\\Connections Reset",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\TCPv4\\Segments Sent/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\TCPv4\\Segments Received/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\TCPv4\\Segments Retransmitted/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET\\Applications Running",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET\\Request Wait Time",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET\\Request Execution Time",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET\\Requests Queued",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET\\Requests Rejected",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET Applications(__Total__)\\Requests/Sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET Applications(__Total__)\\Errors Total/Sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET Applications(__Total__)\\Requests In Application Queue",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET Applications(__Total__)\\Pipeline Instance Count",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\ASP.NET Applications(__Total__)\\Requests Executing",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Jit(_Global_)\\% Time in Jit",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Loading(_Global_)\\% Time Loading",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR LocksAndThreads(_Global_)\\Current Queue Length",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR LocksAndThreads(_Global_)\\Contention Rate / sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR LocksAndThreads(_Global_)\\# of current logical Threads",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR LocksAndThreads(_Global_)\\# of current physical Threads",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Memory(_Global_)\\% Time in GC",
+                    "sampleRate": "PT15S",
+                    "unit": "Percent"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Memory(_Global_)\\Allocated Bytes/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "BytesPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Memory(_Global_)\\Gen 0 heap size",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Memory(_Global_)\\Gen 1 heap size",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Memory(_Global_)\\Gen 2 heap size",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Memory(_Global_)\\Large Object Heap size",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Memory(_Global_)\\# Bytes in all Heaps",
+                    "sampleRate": "PT15S",
+                    "unit": "Bytes"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Networking(_Global_)\\Connections Established",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Remoting(_Global_)\\Remote Calls/sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Exceptions(_Global_)\\# of Exceps Thrown / sec",
+                    "sampleRate": "PT15S",
+                    "unit": "CountPerSecond"
+                  },
+                  {
+                    "counterSpecifier": "\\.NET CLR Interop(_Global_)\\# of marshalling",
+                    "sampleRate": "PT15S",
+                    "unit": "Count"
+                  }
+                ]
+              },
+              "EtwProviders": {
+                "EtwEventSourceProviderConfiguration": [
+                  {
+                    "provider": "Microsoft-ServiceFabric-Actors",
+                    "scheduledTransferKeywordFilter": "1",
+                    "scheduledTransferPeriod": "PT1M",
+                    "DefaultEvents": {
+                      "eventDestination": "ServiceFabricReliableActorEventTable"
+                    }
+                  },
+                  {
+                    "provider": "Microsoft-ServiceFabric-Services",
+                    "DefaultEvents": {
+                      "eventDestination": "ServiceFabricReliableServiceEventTable"
+                    },
+                    "scheduledTransferPeriod": "PT1M"
+                  },
+                  {
+                    "provider": "IoTDemo-DeviceActorService",
+                    "scheduledTransferPeriod": "PT1M",
+                    "DefaultEvents": {
+                      "eventDestination": "ServiceFabricReliableActorEventTable"
+                    }
+                  },
+                  {
+                    "provider": "IoTDemo-DeviceManagementWebService",
+                    "DefaultEvents": {
+                      "eventDestination": "ServiceFabricReliableServiceEventTable"
+                    },
+                    "scheduledTransferPeriod": "PT1M"
+                  },
+                  {
+                    "provider": "IoTDemo-EventProcessorHostService",
+                    "DefaultEvents": {
+                      "eventDestination": "ServiceFabricReliableServiceEventTable"
+                    },
+                    "scheduledTransferPeriod": "PT1M"
+                  }
+                ],
+                "EtwManifestProviderConfiguration": [
+                  {
+                    "provider": "cbd93bc2-71e5-4566-b3a7-595d8eeca6e8",
+                    "scheduledTransferKeywordFilter": "4611686018427387904",
+                    "scheduledTransferLogLevelFilter": "Information",
+                    "scheduledTransferPeriod": "PT1M",
+                    "DefaultEvents": {
+                      "eventDestination": "ServiceFabricSystemEventTable"
+                    }
+                  }
+                ]
+              },
+              "WindowsEventLog": {
+                "scheduledTransferPeriod": "PT1M",
+                "DataSource": [
+                  {
+                    "name": "System!*[System[(Level = 1) or (Level = 2)]]"
+                  },
+                  {
+                    "name": "System!*[System[Provider[@Name='Microsoft Antimalware']]]"
+                  },
+                  {
+                    "name": "Security!*[System[(Level = 1) or (Level = 2)]]"
+                  },
+                  {
+                    "name": "Application!*[System[(Level = 1) or (Level = 2)]]"
+                  }
+                ]
+              },
+              "Metrics": {
+                "resourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name , '/providers/', 'Microsoft.Compute/virtualMachines/', concat(parameters('vmNamePrefix'), copyindex()))]",
+                "MetricAggregation": [
+                  {
+                    "scheduledTransferPeriod": "PT1H"
+                  },
+                  {
+                    "scheduledTransferPeriod": "PT1M"
+                  }
+                ]
+              }
+            }
+          },
+          "StorageAccount": "[parameters('applicationDiagnosticsStorageAccountName')]"
+        },
+        "protectedSettings": {
+          "storageAccountName": "[parameters('applicationDiagnosticsStorageAccountName')]",
+          "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('applicationDiagnosticsStorageAccountName')),'2015-05-01-preview').key1]",
+          "storageAccountEndPoint": "https://core.windows.net/"
+        }
+      },
+      "copy": {
+        "name": "vmExtensionLoop",
+        "count": "[parameters('vmCount')]"
+      }
+    }
+  ],
+  "outputs": {}
+}

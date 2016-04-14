@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="PageViewTracerType" ApplicationTypeVersion="1.0.1" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+   <Parameters>
+      <Parameter Name="EventProcessorHostService_InstanceCount" DefaultValue="-1" />
+      <Parameter Name="EventProcessorHostService_StorageAccountConnectionString" DefaultValue="" />
+      <Parameter Name="EventProcessorHostService_ServiceBusConnectionString" DefaultValue="" />
+      <Parameter Name="EventProcessorHostService_EventHubName" DefaultValue="" />
+      <Parameter Name="EventProcessorHostService_ConsumerGroupName" DefaultValue="" />
+      <Parameter Name="EventProcessorHostService_ContainerName" DefaultValue="usersessions" />
+      <Parameter Name="EventProcessorHostService_QueueName" DefaultValue="usersessions" />
+      <Parameter Name="EventProcessorHostService_MaxRetryCount" DefaultValue="3" />
+      <Parameter Name="EventProcessorHostService_CheckpointCount" DefaultValue="100" />
+      <Parameter Name="EventProcessorHostService_BackoffDelay" DefaultValue="1" />
+      <Parameter Name="PageViewWebService_InstanceCount" DefaultValue="-1" />
+      <Parameter Name="PageViewWebService_ServiceBusConnectionString" DefaultValue="" />
+      <Parameter Name="PageViewWebService_EventHubName" DefaultValue="" />
+      <Parameter Name="PageViewWebService_EventHubClientNumber" DefaultValue="32" />
+      <Parameter Name="PageViewWebService_MaxRetryCount" DefaultValue="3" />
+      <Parameter Name="PageViewWebService_BackoffDelay" DefaultValue="1" />
+   </Parameters>
+   <ServiceManifestImport>
+      <ServiceManifestRef ServiceManifestName="EventProcessorHostServicePkg" ServiceManifestVersion="1.0.0" />
+      <ConfigOverrides>
+         <ConfigOverride Name="Config">
+            <Settings>
+               <Section Name="EventProcessorHostConfig">
+                  <Parameter Name="StorageAccountConnectionString" Value="[EventProcessorHostService_StorageAccountConnectionString]" />
+                  <Parameter Name="ServiceBusConnectionString" Value="[EventProcessorHostService_ServiceBusConnectionString]" />
+                  <Parameter Name="EventHubName" Value="[EventProcessorHostService_EventHubName]" />
+                  <Parameter Name="ConsumerGroupName" Value="[EventProcessorHostService_ConsumerGroupName]" />
+                  <Parameter Name="ContainerName" Value="[EventProcessorHostService_ContainerName]" />
+                  <Parameter Name="QueueName" Value="[EventProcessorHostService_QueueName]" />
+                  <Parameter Name="CheckpointCount" Value="[EventProcessorHostService_CheckpointCount]" />
+                  <Parameter Name="MaxRetryCount" Value="[EventProcessorHostService_MaxRetryCount]" />
+                  <Parameter Name="BackoffDelay" Value="[EventProcessorHostService_BackoffDelay]" />
+               </Section>
+            </Settings>
+         </ConfigOverride>
+      </ConfigOverrides>
+   </ServiceManifestImport>
+   <ServiceManifestImport>
+      <ServiceManifestRef ServiceManifestName="PageViewWebServicePkg" ServiceManifestVersion="1.0.1" />
+      <ConfigOverrides>
+         <ConfigOverride Name="Config">
+            <Settings>
+               <Section Name="PageViewWebServiceConfig">
+                  <Parameter Name="ServiceBusConnectionString" Value="[PageViewWebService_ServiceBusConnectionString]" />
+                  <Parameter Name="EventHubName" Value="[PageViewWebService_EventHubName]" />
+                  <Parameter Name="EventHubClientNumber" Value="[PageViewWebService_EventHubClientNumber]" />
+                  <Parameter Name="MaxRetryCount" Value="[PageViewWebService_MaxRetryCount]" />
+                  <Parameter Name="BackoffDelay" Value="[PageViewWebService_BackoffDelay]" />
+               </Section>
+            </Settings>
+         </ConfigOverride>
+      </ConfigOverrides>
+   </ServiceManifestImport>
+   <DefaultServices>
+      <Service Name="EventProcessorHostService">
+         <StatelessService ServiceTypeName="EventProcessorHostServiceType" InstanceCount="[EventProcessorHostService_InstanceCount]">
+            <SingletonPartition />
+         </StatelessService>
+      </Service>
+      <Service Name="PageViewWebService">
+         <StatelessService ServiceTypeName="PageViewWebServiceType" InstanceCount="[PageViewWebService_InstanceCount]">
+            <SingletonPartition />
+         </StatelessService>
+      </Service>
+   </DefaultServices>
+</ApplicationManifest>

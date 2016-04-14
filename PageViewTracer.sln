@@ -1,0 +1,86 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "PageViewTracer", "PageViewTracer\PageViewTracer.sfproj", "{06786E84-03FC-4033-8C77-DB05D54BD2AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PageViewWebService", "PageViewWebService\PageViewWebService.csproj", "{B527FD03-1472-48BB-A2D2-50017CAABCE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventProcessorHostService", "EventProcessorHostService\EventProcessorHostService.csproj", "{CF36D4AB-5668-487C-9981-2E55B89C21FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{38698B73-E79B-4BE7-8146-DD5A763715EF}"
+	ProjectSection(SolutionItems) = preProject
+		Documents\PageViewTracer.vsdx = Documents\PageViewTracer.vsdx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{D858CAD2-9493-4D74-A7A6-F8363A1E57C6}"
+	ProjectSection(SolutionItems) = preProject
+		Images\Architecture.png = Images\Architecture.png
+		Images\BlobContent.png = Images\BlobContent.png
+		Images\Blobs.png = Images\Blobs.png
+		Images\Client.png = Images\Client.png
+		Images\EventHub.png = Images\EventHub.png
+		Images\QueueMessage.png = Images\QueueMessage.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D4482228-5214-47CC-9218-B1BABE103C02}"
+	ProjectSection(SolutionItems) = preProject
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserEmulator", "UserEmulator\UserEmulator.csproj", "{E17E57E0-55F8-41C8-A81C-719FF7FB0197}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{AA413FD4-FD2B-4B29-864C-E42915767176}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06786E84-03FC-4033-8C77-DB05D54BD2AF}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{06786E84-03FC-4033-8C77-DB05D54BD2AF}.Debug|x64.ActiveCfg = Debug|x64
+		{06786E84-03FC-4033-8C77-DB05D54BD2AF}.Debug|x64.Build.0 = Debug|x64
+		{06786E84-03FC-4033-8C77-DB05D54BD2AF}.Debug|x64.Deploy.0 = Debug|x64
+		{06786E84-03FC-4033-8C77-DB05D54BD2AF}.Release|Any CPU.ActiveCfg = Release|x64
+		{06786E84-03FC-4033-8C77-DB05D54BD2AF}.Release|x64.ActiveCfg = Release|x64
+		{06786E84-03FC-4033-8C77-DB05D54BD2AF}.Release|x64.Build.0 = Release|x64
+		{06786E84-03FC-4033-8C77-DB05D54BD2AF}.Release|x64.Deploy.0 = Release|x64
+		{B527FD03-1472-48BB-A2D2-50017CAABCE3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B527FD03-1472-48BB-A2D2-50017CAABCE3}.Debug|x64.ActiveCfg = Debug|x64
+		{B527FD03-1472-48BB-A2D2-50017CAABCE3}.Debug|x64.Build.0 = Debug|x64
+		{B527FD03-1472-48BB-A2D2-50017CAABCE3}.Release|Any CPU.ActiveCfg = Release|x64
+		{B527FD03-1472-48BB-A2D2-50017CAABCE3}.Release|x64.ActiveCfg = Release|x64
+		{B527FD03-1472-48BB-A2D2-50017CAABCE3}.Release|x64.Build.0 = Release|x64
+		{CF36D4AB-5668-487C-9981-2E55B89C21FF}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{CF36D4AB-5668-487C-9981-2E55B89C21FF}.Debug|x64.ActiveCfg = Debug|x64
+		{CF36D4AB-5668-487C-9981-2E55B89C21FF}.Debug|x64.Build.0 = Debug|x64
+		{CF36D4AB-5668-487C-9981-2E55B89C21FF}.Release|Any CPU.ActiveCfg = Release|x64
+		{CF36D4AB-5668-487C-9981-2E55B89C21FF}.Release|x64.ActiveCfg = Release|x64
+		{CF36D4AB-5668-487C-9981-2E55B89C21FF}.Release|x64.Build.0 = Release|x64
+		{E17E57E0-55F8-41C8-A81C-719FF7FB0197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E17E57E0-55F8-41C8-A81C-719FF7FB0197}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E17E57E0-55F8-41C8-A81C-719FF7FB0197}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E17E57E0-55F8-41C8-A81C-719FF7FB0197}.Debug|x64.Build.0 = Debug|Any CPU
+		{E17E57E0-55F8-41C8-A81C-719FF7FB0197}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E17E57E0-55F8-41C8-A81C-719FF7FB0197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E17E57E0-55F8-41C8-A81C-719FF7FB0197}.Release|x64.ActiveCfg = Release|Any CPU
+		{E17E57E0-55F8-41C8-A81C-719FF7FB0197}.Release|x64.Build.0 = Release|Any CPU
+		{AA413FD4-FD2B-4B29-864C-E42915767176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA413FD4-FD2B-4B29-864C-E42915767176}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA413FD4-FD2B-4B29-864C-E42915767176}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AA413FD4-FD2B-4B29-864C-E42915767176}.Debug|x64.Build.0 = Debug|Any CPU
+		{AA413FD4-FD2B-4B29-864C-E42915767176}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA413FD4-FD2B-4B29-864C-E42915767176}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA413FD4-FD2B-4B29-864C-E42915767176}.Release|x64.ActiveCfg = Release|Any CPU
+		{AA413FD4-FD2B-4B29-864C-E42915767176}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

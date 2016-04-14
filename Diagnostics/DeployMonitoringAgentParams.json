@@ -1,0 +1,18 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmNamePrefix": {
+        "value": "Node"
+    },
+    "vmCount": {
+        "value": 5
+    },
+    "monitoringAgentWorkspaceID": {
+      "value": "97b45059-c056-4baa-9017-369444db5378"
+    },
+    "monitoringAgentWorkspaceKey": {
+      "value": "QeaH0n9QnjgbVcIyL0yUHYIR52O8J5av7v46zWYWTmqBCjRtigucj36JhqtXZqPPLeOOjg5hKi9tzjWBLL47NQ=="
+    }
+  }
+}

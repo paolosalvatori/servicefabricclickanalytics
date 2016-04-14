@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <!-- PageViewWebServiceConfig connection strings -->
+  <Section Name="PageViewWebServiceConfig">
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="EventHubName" Value="" />
+    <Parameter Name="EventHubClientNumber" Value="32" />
+    <Parameter Name="MaxRetryCount" Value="3" />
+    <Parameter Name="BackoffDelay" Value="1" />
+  </Section>
+</Settings>

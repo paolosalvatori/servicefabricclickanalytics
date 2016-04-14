@@ -1,0 +1,48 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmNamePrefix": {
+      "type": "string"
+    },
+    "vmCount": {
+      "type": "int"
+    },
+    "monitoringAgentWorkspaceID": {
+      "type": "string",
+      "metadata": {
+        "description": "Monitoring Agent Workspace ID extension name"
+      }
+    },
+    "monitoringAgentWorkspaceKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Monitoring Agent Workspace Key extension name"
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('vmNamePrefix'), copyIndex(0), '/MicrosoftMonitoringAgent')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+        "type": "MicrosoftMonitoringAgent",
+        "typeHandlerVersion": "1.0",
+        "settings": {
+          "workspaceId": "[parameters('monitoringAgentWorkspaceID')]"
+        },
+        "protectedSettings": {
+          "workspaceKey": "[parameters('monitoringAgentWorkspaceKey')]"
+        }
+      },
+      "copy": {
+        "name": "vmExtensionLoop",
+        "count": "[parameters('vmCount')]"
+      }
+    }
+  ],
+  "outputs": {}
+}
