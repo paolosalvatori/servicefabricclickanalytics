@@ -73,11 +73,13 @@ This list contains the placeholders that need to be replaced before deploying an
 ## Configuration Files ##
 
 **App.config** file in the **UserEmulator** project:
-    
+
+```xml    
     <?xml version="1.0" encoding="utf-8"?>
     <configuration>
 		<appSettings>
-			<add key="url" value="http://localhost:8085/usersessions;http://[SF_CLUSTER_NAME].[REGION].cloudapp.azure.com:8085/usersessions"/>
+			<add key="url" value="http://localhost:8085/usersessions;
+                                  http://[NAME].[REGION].cloudapp.azure.com:8085/usersessions"/>
 			<add key="userCount" value="20"/>
 			<add key="eventInterval" value="2000"/>
 			<add key="eventsPerUserSession" value="50"/>
@@ -94,59 +96,107 @@ This list contains the placeholders that need to be replaced before deploying an
 			</assemblyBinding>
 		</runtime>
     </configuration>
+```
 
 **ApplicationParameters\Local.xml** file in the **PageViewTracer** project:
 
+```xml
 	<?xml version="1.0" encoding="utf-8"?>
-	<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/PageViewTracer" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+	<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                 Name="fabric:/PageViewTracer" 
+                 xmlns="http://schemas.microsoft.com/2011/01/fabric">
 		<Parameters>
-			<Parameter Name="EventProcessorHostService_InstanceCount" Value="1" />
-			<Parameter Name="EventProcessorHostService_StorageAccountConnectionString" Value="[StorageAccountConnectionString]" />
-			<Parameter Name="EventProcessorHostService_ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-			<Parameter Name="EventProcessorHostService_EventHubName" Value="[EventHubName]" />
-			<Parameter Name="EventProcessorHostService_ConsumerGroupName" Value="[ConsumerGroupName]" />
-			<Parameter Name="EventProcessorHostService_ContainerName" Value="[ContainerName]" />
-			<Parameter Name="EventProcessorHostService_QueueName" Value="[QueueName]" />
-			<Parameter Name="EventProcessorHostService_MaxRetryCount" Value="3" />
-			<Parameter Name="EventProcessorHostService_CheckpointCount" Value="[CheckpointCount]" />
-			<Parameter Name="EventProcessorHostService_BackoffDelay" Value="1" />
-			<Parameter Name="PageViewWebService_InstanceCount" Value="1" />
-			<Parameter Name="PageViewWebService_ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-			<Parameter Name="PageViewWebService_EventHubName" Value="[EventHubName]" />
-			<Parameter Name="PageViewWebService_EventHubClientNumber" Value="[EventHubClientNumber]" />
-			<Parameter Name="PageViewWebService_MaxRetryCount" Value="3" />
-			<Parameter Name="PageViewWebService_BackoffDelay" Value="1" />
+			<Parameter Name="EventProcessorHostService_InstanceCount" 
+                       Value="1" />
+			<Parameter Name="EventProcessorHostService_StorageAccountConnectionString" 
+                       Value="[StorageAccountConnectionString]" />
+			<Parameter Name="EventProcessorHostService_ServiceBusConnectionString" 
+                       Value="[ServiceBusConnectionString]" />
+			<Parameter Name="EventProcessorHostService_EventHubName" 
+                       Value="[EventHubName]" />
+			<Parameter Name="EventProcessorHostService_ConsumerGroupName" 
+                       Value="[ConsumerGroupName]" />
+			<Parameter Name="EventProcessorHostService_ContainerName" 
+                       Value="[ContainerName]" />
+			<Parameter Name="EventProcessorHostService_QueueName" 
+                       Value="[QueueName]" />
+			<Parameter Name="EventProcessorHostService_MaxRetryCount" 
+                       Value="3" />
+			<Parameter Name="EventProcessorHostService_CheckpointCount" 
+                       Value="[CheckpointCount]" />
+			<Parameter Name="EventProcessorHostService_BackoffDelay" 
+                       Value="1" />
+			<Parameter Name="PageViewWebService_InstanceCount" 
+                       Value="1" />
+			<Parameter Name="PageViewWebService_ServiceBusConnectionString" 
+                       Value="[ServiceBusConnectionString]" />
+			<Parameter Name="PageViewWebService_EventHubName" 
+                       Value="[EventHubName]" />
+			<Parameter Name="PageViewWebService_EventHubClientNumber" 
+                       Value="[EventHubClientNumber]" />
+			<Parameter Name="PageViewWebService_MaxRetryCount" 
+                       Value="3" />
+			<Parameter Name="PageViewWebService_BackoffDelay" 
+                       Value="1" />
 		</Parameters>
 	</Application>
+```
 
 **ApplicationParameters\Cloud.xml** file in the **PageViewTracer** project:
 
-    <?xml version="1.0" encoding="utf-8"?>
-	<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/PageViewTracer" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+```xml
+	<?xml version="1.0" encoding="utf-8"?>
+	<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                 Name="fabric:/PageViewTracer" 
+                 xmlns="http://schemas.microsoft.com/2011/01/fabric">
 		<Parameters>
-			<Parameter Name="EventProcessorHostService_InstanceCount" Value="-1" />
-			<Parameter Name="EventProcessorHostService_StorageAccountConnectionString" Value="[StorageAccountConnectionString]" />
-			<Parameter Name="EventProcessorHostService_ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-			<Parameter Name="EventProcessorHostService_EventHubName" Value="[EventHubName]" />
-			<Parameter Name="EventProcessorHostService_ConsumerGroupName" Value="[ConsumerGroupName]" />
-			<Parameter Name="EventProcessorHostService_ContainerName" Value="[ContainerName]" />
-			<Parameter Name="EventProcessorHostService_QueueName" Value="[QueueName]" />
-			<Parameter Name="EventProcessorHostService_MaxRetryCount" Value="3" />
-			<Parameter Name="EventProcessorHostService_CheckpointCount" Value="[CheckpointCount]" />
-			<Parameter Name="EventProcessorHostService_BackoffDelay" Value="1" />
-			<Parameter Name="PageViewWebService_InstanceCount" Value="-1" />
-			<Parameter Name="PageViewWebService_ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-			<Parameter Name="PageViewWebService_EventHubName" Value="[EventHubName]" />
-			<Parameter Name="PageViewWebService_EventHubClientNumber" Value="[EventHubClientNumber]" />
-			<Parameter Name="PageViewWebService_MaxRetryCount" Value="3" />
-			<Parameter Name="PageViewWebService_BackoffDelay" Value="1" />
+			<Parameter Name="EventProcessorHostService_InstanceCount" 
+                       Value="-1" />
+			<Parameter Name="EventProcessorHostService_StorageAccountConnectionString" 
+                       Value="[StorageAccountConnectionString]" />
+			<Parameter Name="EventProcessorHostService_ServiceBusConnectionString" 
+                       Value="[ServiceBusConnectionString]" />
+			<Parameter Name="EventProcessorHostService_EventHubName" 
+                       Value="[EventHubName]" />
+			<Parameter Name="EventProcessorHostService_ConsumerGroupName" 
+                       Value="[ConsumerGroupName]" />
+			<Parameter Name="EventProcessorHostService_ContainerName" 
+                       Value="[ContainerName]" />
+			<Parameter Name="EventProcessorHostService_QueueName" 
+                       Value="[QueueName]" />
+			<Parameter Name="EventProcessorHostService_MaxRetryCount" 
+                       Value="3" />
+			<Parameter Name="EventProcessorHostService_CheckpointCount" 
+                       Value="[CheckpointCount]" />
+			<Parameter Name="EventProcessorHostService_BackoffDelay" 
+                       Value="1" />
+			<Parameter Name="PageViewWebService_InstanceCount" 
+                       Value="-1" />
+			<Parameter Name="PageViewWebService_ServiceBusConnectionString" 
+                       Value="[ServiceBusConnectionString]" />
+			<Parameter Name="PageViewWebService_EventHubName" 
+                       Value="[EventHubName]" />
+			<Parameter Name="PageViewWebService_EventHubClientNumber" 
+                       Value="[EventHubClientNumber]" />
+			<Parameter Name="PageViewWebService_MaxRetryCount" 
+                       Value="3" />
+			<Parameter Name="PageViewWebService_BackoffDelay" 
+                       Value="1" />
 		</Parameters>
 	</Application>
+```
 
 **ApplicationManifest.xml** file in the **PageViewTracer** project:
 
+```xml
     <?xml version="1.0" encoding="utf-8"?>
-    <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="PageViewTracerType" ApplicationTypeVersion="1.0.1" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+    <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                         ApplicationTypeName="PageViewTracerType" 
+                         ApplicationTypeVersion="1.0.1" 
+                         xmlns="http://schemas.microsoft.com/2011/01/fabric">
 		<Parameters>
 	      <Parameter Name="EventProcessorHostService_InstanceCount" DefaultValue="-1" />
 	      <Parameter Name="EventProcessorHostService_StorageAccountConnectionString" DefaultValue="" />
@@ -166,36 +216,52 @@ This list contains the placeholders that need to be replaced before deploying an
 	      <Parameter Name="PageViewWebService_BackoffDelay" DefaultValue="1" />
 		</Parameters>
 		<ServiceManifestImport>
-      		<ServiceManifestRef ServiceManifestName="EventProcessorHostServicePkg" ServiceManifestVersion="1.0.0" />
+      		<ServiceManifestRef ServiceManifestName="EventProcessorHostServicePkg" 
+                                ServiceManifestVersion="1.0.0" />
 			<ConfigOverrides>
 			<ConfigOverride Name="Config">
 				    <Settings>
 						<Section Name="EventProcessorHostConfig">
-							<Parameter Name="StorageAccountConnectionString" Value="[EventProcessorHostService_StorageAccountConnectionString]" />
-							<Parameter Name="ServiceBusConnectionString" Value="[EventProcessorHostService_ServiceBusConnectionString]" />
-							<Parameter Name="EventHubName" Value="[EventProcessorHostService_EventHubName]" />
-							<Parameter Name="ConsumerGroupName" Value="[EventProcessorHostService_ConsumerGroupName]" />
-							<Parameter Name="ContainerName" Value="[EventProcessorHostService_ContainerName]" />
-							<Parameter Name="QueueName" Value="[EventProcessorHostService_QueueName]" />
-							<Parameter Name="CheckpointCount" Value="[EventProcessorHostService_CheckpointCount]" />
-							<Parameter Name="MaxRetryCount" Value="[EventProcessorHostService_MaxRetryCount]" />
-							<Parameter Name="BackoffDelay" Value="[EventProcessorHostService_BackoffDelay]" />
+							<Parameter Name="StorageAccountConnectionString" 
+                                       Value="[EventProcessorHostService_StorageAccountConnectionString]" />
+							<Parameter Name="ServiceBusConnectionString" 
+                                       Value="[EventProcessorHostService_ServiceBusConnectionString]" />
+							<Parameter Name="EventHubName" 
+                                       Value="[EventProcessorHostService_EventHubName]" />
+							<Parameter Name="ConsumerGroupName" 
+                                       Value="[EventProcessorHostService_ConsumerGroupName]" />
+							<Parameter Name="ContainerName" 
+                                       Value="[EventProcessorHostService_ContainerName]" />
+							<Parameter Name="QueueName" 
+                                       Value="[EventProcessorHostService_QueueName]" />
+							<Parameter Name="CheckpointCount" 
+                                       Value="[EventProcessorHostService_CheckpointCount]" />
+							<Parameter Name="MaxRetryCount" 
+                                       Value="[EventProcessorHostService_MaxRetryCount]" />
+							<Parameter Name="BackoffDelay" 
+                                       Value="[EventProcessorHostService_BackoffDelay]" />
 						</Section>
 				    </Settings>
 				</ConfigOverride>
 			</ConfigOverrides>
 		</ServiceManifestImport>
 		<ServiceManifestImport>
-			<ServiceManifestRef ServiceManifestName="PageViewWebServicePkg" ServiceManifestVersion="1.0.1" />
+			<ServiceManifestRef ServiceManifestName="PageViewWebServicePkg" 
+                                ServiceManifestVersion="1.0.1" />
 			<ConfigOverrides>
 				<ConfigOverride Name="Config">
 					<Settings>
 						<Section Name="PageViewWebServiceConfig">
-							<Parameter Name="ServiceBusConnectionString" Value="[PageViewWebService_ServiceBusConnectionString]" />
-							<Parameter Name="EventHubName" Value="[PageViewWebService_EventHubName]" />
-							<Parameter Name="EventHubClientNumber" Value="[PageViewWebService_EventHubClientNumber]" />
-							<Parameter Name="MaxRetryCount" Value="[PageViewWebService_MaxRetryCount]" />
-							<Parameter Name="BackoffDelay" Value="[PageViewWebService_BackoffDelay]" />
+							<Parameter Name="ServiceBusConnectionString" 
+                                       Value="[PageViewWebService_ServiceBusConnectionString]" />
+							<Parameter Name="EventHubName" 
+                                       Value="[PageViewWebService_EventHubName]" />
+							<Parameter Name="EventHubClientNumber" 
+                                       Value="[PageViewWebService_EventHubClientNumber]" />
+							<Parameter Name="MaxRetryCount" 
+                                       Value="[PageViewWebService_MaxRetryCount]" />
+							<Parameter Name="BackoffDelay" 
+                                       Value="[PageViewWebService_BackoffDelay]" />
 						</Section>
 					</Settings>
 				</ConfigOverride>
@@ -214,3 +280,4 @@ This list contains the placeholders that need to be replaced before deploying an
 			</Service>
 		</DefaultServices>
 	</ApplicationManifest>
+```
