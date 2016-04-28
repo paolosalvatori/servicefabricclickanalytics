@@ -269,12 +269,14 @@ This list contains the placeholders that need to be replaced before deploying an
 		</ServiceManifestImport>
 		<DefaultServices>
 			<Service Name="EventProcessorHostService">
-				<StatelessService ServiceTypeName="EventProcessorHostServiceType" InstanceCount="[EventProcessorHostService_InstanceCount]">
+				<StatelessService ServiceTypeName="EventProcessorHostServiceType" 
+                                  InstanceCount="[EventProcessorHostService_InstanceCount]">
 					<SingletonPartition />
 				</StatelessService>
 			</Service>
 			<Service Name="PageViewWebService">
-				<StatelessService ServiceTypeName="PageViewWebServiceType" InstanceCount="[PageViewWebService_InstanceCount]">
+				<StatelessService ServiceTypeName="PageViewWebServiceType" 
+                                  InstanceCount="[PageViewWebService_InstanceCount]">
 				<SingletonPartition />
 			</StatelessService>
 			</Service>
