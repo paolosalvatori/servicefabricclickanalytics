@@ -1,35 +1,48 @@
-﻿// ------------------------------------------------------------
-//  Copyright (c) Microsoft Corporation.  All rights reserved.
-//  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
-// ------------------------------------------------------------
+﻿#region Copyright
+
+// //=======================================================================================
+// // Microsoft Azure Customer Advisory Team  
+// //
+// // This sample is supplemental to the technical guidance published on the community
+// // blog at http://blogs.msdn.com/b/paolos/. 
+// // 
+// // Author: Paolo Salvatori
+// //=======================================================================================
+// // Copyright © 2016 Microsoft Corporation. All rights reserved.
+// // 
+// // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER 
+// // EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF 
+// // MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. YOU BEAR THE RISK OF USING IT.
+// //=======================================================================================
+
+#endregion
 
 #region Using Directives
 
-
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AzureCat.Samples.Entities;
+using Microsoft.ServiceBus;
+using Microsoft.ServiceBus.Messaging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Newtonsoft.Json;
 
 #endregion
 
 namespace Microsoft.AzureCat.Samples.EventProcessorHostService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.AzureCat.Samples.Entities;
-    using Microsoft.ServiceBus;
-    using Microsoft.ServiceBus.Messaging;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Blob;
-    using Newtonsoft.Json;
-
     public class EventProcessor : IEventProcessor
     {
         #region Private Static Fields
 
-        private static readonly Dictionary<string, CloudAppendBlob> cloudAppendBlobDictionary = new Dictionary<string, CloudAppendBlob>();
+        private static readonly Dictionary<string, CloudAppendBlob> cloudAppendBlobDictionary =
+            new Dictionary<string, CloudAppendBlob>();
 
         #endregion
 
@@ -43,21 +56,13 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
             int checkpointCount)
         {
             if (string.IsNullOrWhiteSpace(serviceBusConnectionString))
-            {
                 throw new ArgumentNullException($"{nameof(serviceBusConnectionString)} parameter cannot be null");
-            }
             if (string.IsNullOrWhiteSpace(storageAccountConnectionString))
-            {
                 throw new ArgumentNullException($"{nameof(storageAccountConnectionString)} parameter cannot be null");
-            }
             if (string.IsNullOrWhiteSpace(containerName))
-            {
                 throw new ArgumentNullException($"{nameof(containerName)} parameter cannot be null");
-            }
             if (string.IsNullOrWhiteSpace(queueName))
-            {
                 throw new ArgumentNullException($"{nameof(queueName)} parameter cannot be null");
-            }
             this.checkpointCount = checkpointCount;
 
             // Creates CloudStorageAccount instance
@@ -65,25 +70,23 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
             CloudStorageAccount.TryParse(storageAccountConnectionString, out cloudStorageAccount);
 
             //Creates service client for credentialed access to the Blob service.
-            CloudBlobClient blobClient = cloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = cloudStorageAccount.CreateCloudBlobClient();
 
             //Gets a reference to a container.
-            this.container = blobClient.GetContainerReference(containerName);
+            container = blobClient.GetContainerReference(containerName);
 
             // Creates a QueueClient
-            this.queueClient = QueueClient.CreateFromConnectionString(serviceBusConnectionString, queueName);
+            queueClient = QueueClient.CreateFromConnectionString(serviceBusConnectionString, queueName);
 
             // Creates the queue if doesn't exist
-            NamespaceManager namespaceManager = NamespaceManager.CreateFromConnectionString(serviceBusConnectionString);
+            var namespaceManager = NamespaceManager.CreateFromConnectionString(serviceBusConnectionString);
             if (!namespaceManager.QueueExists(queueName))
-            {
                 namespaceManager.CreateQueue(
                     new QueueDescription(queueName)
 
                     {
                         EnablePartitioning = true
                     });
-            }
         }
 
         #endregion
@@ -111,32 +114,23 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
             try
             {
                 if (events == null)
-                {
                     return;
-                }
-                IList<EventData> eventDataList = events as IList<EventData> ?? events.ToList();
+                var eventDataList = events as IList<EventData> ?? events.ToList();
 
                 // Trace individual events
-                foreach (EventData eventData in eventDataList)
-                {
+                foreach (var eventData in eventDataList)
                     try
                     {
                         if (!eventData.Properties.ContainsKey("userId"))
-                        {
                             continue;
-                        }
                         if (!eventData.Properties.ContainsKey("eventType"))
-                        {
                             continue;
-                        }
-                        string userId = eventData.Properties["userId"] as string;
+                        var userId = eventData.Properties["userId"] as string;
                         if (string.IsNullOrWhiteSpace(userId))
-                        {
                             continue;
-                        }
 
                         EventType eventType;
-                        object type = eventData.Properties["eventType"];
+                        var type = eventData.Properties["eventType"];
                         if (type is EventType)
                         {
                             // Casting type
@@ -149,13 +143,11 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
                         }
                         else
                         {
-                            string value = type as string;
+                            var value = type as string;
                             if (value != null)
                             {
                                 if (!Enum.TryParse(value, out eventType))
-                                {
                                     continue;
-                                }
                             }
                             else
                             {
@@ -163,15 +155,13 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
                             }
                         }
 
-                        CloudAppendBlob cloudAppendBlob = eventType == EventType.StartSession
-                            ? this.NewCloudAppendBlob(userId)
-                            : this.GetCloudAppendBlob(userId);
+                        var cloudAppendBlob = eventType == EventType.StartSession
+                            ? NewCloudAppendBlob(userId)
+                            : GetCloudAppendBlob(userId);
 
                         if (cloudAppendBlob == null)
-                        {
                             continue;
-                        }
-                        using (MemoryStream stream = new MemoryStream(eventData.GetBytes()))
+                        using (var stream = new MemoryStream(eventData.GetBytes()))
                         {
                             await cloudAppendBlob.AppendBlockAsync(stream);
                             ServiceEventSource.Current.Message($"Event appended to [{cloudAppendBlob.Name}] ");
@@ -182,19 +172,17 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
                         if (eventType == EventType.StopSession)
                         {
                             ServiceEventSource.Current.Message($"User session closed: UserId=[{userId}]");
-                            await this.SendMessageAsync(userId, cloudAppendBlob.Uri);
+                            await SendMessageAsync(userId, cloudAppendBlob.Uri);
                         }
 
                         // Increase messageCount
-                        this.messageCount++;
+                        messageCount++;
 
                         // Invoke CheckpointAsync when messageCount => checkpointCount
-                        if (this.messageCount < this.checkpointCount)
-                        {
+                        if (messageCount < checkpointCount)
                             continue;
-                        }
                         await context.CheckpointAsync();
-                        this.messageCount = 0;
+                        messageCount = 0;
                     }
                     catch (LeaseLostException ex)
                     {
@@ -204,17 +192,14 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
                     catch (AggregateException ex)
                     {
                         // Trace Exception
-                        foreach (Exception exception in ex.InnerExceptions)
-                        {
+                        foreach (var exception in ex.InnerExceptions)
                             ServiceEventSource.Current.Message(exception.Message);
-                        }
                     }
                     catch (Exception ex)
                     {
                         // Trace Exception
                         ServiceEventSource.Current.Message(ex.Message);
                     }
-                }
             }
             catch (LeaseLostException ex)
             {
@@ -224,10 +209,8 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
             catch (AggregateException ex)
             {
                 // Trace Exception
-                foreach (Exception exception in ex.InnerExceptions)
-                {
+                foreach (var exception in ex.InnerExceptions)
                     ServiceEventSource.Current.Message(exception.Message);
-                }
             }
             catch (Exception ex)
             {
@@ -243,9 +226,7 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
                 ServiceEventSource.Current.Message(
                     $"Lease lost: EventHub=[{context.EventHubPath}] ConsumerGroup=[{context.ConsumerGroupName}] PartitionId=[{context.Lease.PartitionId}]");
                 if (reason == CloseReason.Shutdown)
-                {
                     await context.CheckpointAsync();
-                }
             }
             catch (Exception ex)
             {
@@ -263,10 +244,8 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
             lock (cloudAppendBlobDictionary)
             {
                 if (cloudAppendBlobDictionary.ContainsKey(userId))
-                {
                     return cloudAppendBlobDictionary[userId];
-                }
-                return this.NewCloudAppendBlob(userId);
+                return NewCloudAppendBlob(userId);
             }
         }
 
@@ -274,12 +253,11 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
         {
             lock (cloudAppendBlobDictionary)
             {
-                CloudAppendBlob cloudAppendBlob =
-                    this.container.GetAppendBlobReference($"{userId}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture)}.log");
+                var cloudAppendBlob =
+                    container.GetAppendBlobReference(
+                        $"{userId}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture)}.log");
                 if (!cloudAppendBlob.Exists())
-                {
                     cloudAppendBlob.CreateOrReplace();
-                }
                 cloudAppendBlobDictionary[userId] = cloudAppendBlob;
                 return cloudAppendBlobDictionary[userId];
             }
@@ -287,7 +265,7 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
 
         private async Task SendMessageAsync(string userId, Uri blobUri)
         {
-            using (BrokeredMessage message = new BrokeredMessage(
+            using (var message = new BrokeredMessage(
                 Encoding.UTF8.GetBytes(
                     JsonConvert.SerializeObject(
                         new UserSession
@@ -296,7 +274,7 @@ namespace Microsoft.AzureCat.Samples.EventProcessorHostService
                             Uri = blobUri
                         }))))
             {
-                await this.queueClient.SendAsync(message);
+                await queueClient.SendAsync(message);
             }
         }
 

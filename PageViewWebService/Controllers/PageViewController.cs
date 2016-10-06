@@ -1,26 +1,42 @@
-﻿// ------------------------------------------------------------
-//  Copyright (c) Microsoft Corporation.  All rights reserved.
-//  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
-// ------------------------------------------------------------
+﻿#region Copyright
+
+// //=======================================================================================
+// // Microsoft Azure Customer Advisory Team  
+// //
+// // This sample is supplemental to the technical guidance published on the community
+// // blog at http://blogs.msdn.com/b/paolos/. 
+// // 
+// // Author: Paolo Salvatori
+// //=======================================================================================
+// // Copyright © 2016 Microsoft Corporation. All rights reserved.
+// // 
+// // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER 
+// // EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF 
+// // MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. YOU BEAR THE RISK OF USING IT.
+// //=======================================================================================
+
+#endregion
 
 #region Using Directices
 
+#endregion
 
+#region Using Directives
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Microsoft.AzureCat.Samples.Entities;
+using Microsoft.ServiceBus.Messaging;
+using Newtonsoft.Json;
 
 #endregion
 
 namespace Microsoft.AzureCat.Samples.PageViewWebService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Web.Http;
-    using Microsoft.AzureCat.Samples.Entities;
-    using Microsoft.ServiceBus.Messaging;
-    using Newtonsoft.Json;
-
     public class PageViewController : ApiController
     {
         #region Internal Static Fields
@@ -74,9 +90,7 @@ namespace Microsoft.AzureCat.Samples.PageViewWebService
             {
                 // Validates input
                 if (payload?.UserEvent == null)
-                {
                     return;
-                }
 
                 // Gets the userid from the payload or from the header
                 string userId;
@@ -87,31 +101,26 @@ namespace Microsoft.AzureCat.Samples.PageViewWebService
                 else
                 {
                     IEnumerable<string> headerValues;
-                    if (!this.Request.Headers.TryGetValues(UserIdHeader, out headerValues))
-                    {
+                    if (!Request.Headers.TryGetValues(UserIdHeader, out headerValues))
                         return;
-                    }
                     userId = headerValues.FirstOrDefault();
                 }
                 if (string.IsNullOrWhiteSpace(userId))
-                {
                     return;
-                }
 
                 // Gets an EventHubClient from the pool
-                EventHubClient eventHubClient = GetEventHubClient();
+                var eventHubClient = GetEventHubClient();
                 if (eventHubClient == null)
-                {
                     return;
-                }
 
                 // Submits the UserEvent to the EventHub
-                using (EventData eventData = new EventData(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(payload.UserEvent)))
-                {
-                    // Uses the userId as partition key. This way all the events from a user session 
-                    // will end up in the same partition and processed in a chronological order.
-                    PartitionKey = userId
-                })
+                using (
+                    var eventData = new EventData(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(payload.UserEvent)))
+                    {
+                        // Uses the userId as partition key. This way all the events from a user session 
+                        // will end up in the same partition and processed in a chronological order.
+                        PartitionKey = userId
+                    })
                 {
                     // Adds the userId as a custom property
                     eventData.Properties.Add(UserIdProperty, userId);
@@ -130,12 +139,8 @@ namespace Microsoft.AzureCat.Samples.PageViewWebService
             catch (AggregateException ex)
             {
                 if (ex.InnerExceptions?.Count > 0)
-                {
-                    foreach (Exception exception in ex.InnerExceptions)
-                    {
+                    foreach (var exception in ex.InnerExceptions)
                         ServiceEventSource.Current.Message(exception.Message);
-                    }
-                }
             }
             catch (Exception ex)
             {

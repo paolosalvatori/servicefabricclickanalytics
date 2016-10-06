@@ -1,29 +1,40 @@
-﻿// ------------------------------------------------------------
-//  Copyright (c) Microsoft Corporation.  All rights reserved.
-//  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
-// ------------------------------------------------------------
+﻿#region Copyright
+
+// //=======================================================================================
+// // Microsoft Azure Customer Advisory Team  
+// //
+// // This sample is supplemental to the technical guidance published on the community
+// // blog at http://blogs.msdn.com/b/paolos/. 
+// // 
+// // Author: Paolo Salvatori
+// //=======================================================================================
+// // Copyright © 2016 Microsoft Corporation. All rights reserved.
+// // 
+// // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER 
+// // EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF 
+// // MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. YOU BEAR THE RISK OF USING IT.
+// //=======================================================================================
+
+#endregion
 
 #region Using Directives
 
-
+using System;
+using System.Collections.Generic;
+using System.Fabric;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.ServiceBus;
+using Microsoft.ServiceBus.Messaging;
+using Microsoft.ServiceFabric.Services.Communication.Runtime;
+using Microsoft.ServiceFabric.Services.Runtime;
 
 #endregion
 
 namespace Microsoft.AzureCat.Samples.PageViewWebService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Fabric;
-    using System.Fabric.Description;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.ServiceBus;
-    using Microsoft.ServiceBus.Messaging;
-    using Microsoft.ServiceFabric.Services.Communication.Runtime;
-    using Microsoft.ServiceFabric.Services.Runtime;
-
     /// <summary>
-    /// The FabricRuntime creates an instance of this class for each service type instance. 
+    ///     The FabricRuntime creates an instance of this class for each service type instance.
     /// </summary>
     internal sealed class PageViewWebService : StatelessService
     {
@@ -52,7 +63,9 @@ namespace Microsoft.AzureCat.Samples.PageViewWebService
         //************************************
         // Formats & Messages
         //************************************
-        private const string ParameterCannotBeNullFormat = "The parameter [{0}] is not defined in the Setting.xml configuration file.";
+        private const string ParameterCannotBeNullFormat =
+            "The parameter [{0}] is not defined in the Setting.xml configuration file.";
+
         private const string RetryTimeoutExhausted = "Retry timeout exhausted.";
 
         //************************************
@@ -77,27 +90,23 @@ namespace Microsoft.AzureCat.Samples.PageViewWebService
         #region StatelessService Protected Methods
 
         /// <summary>
-        /// Optional override to create listeners (like tcp, http) for this service instance.
+        ///     Optional override to create listeners (like tcp, http) for this service instance.
         /// </summary>
         /// <returns>The collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            this.ReadSettings();
-            for (int k = 1; k <= this.maxRetryCount; k++)
+            ReadSettings();
+            for (var k = 1; k <= maxRetryCount; k++)
             {
                 try
                 {
-                    for (int i = 1; i < this.eventHubClientNumber; i++)
+                    for (var i = 1; i < eventHubClientNumber; i++)
                     {
-                        EventHubClient eventHubClient = this.CreateEventHubClient();
+                        var eventHubClient = CreateEventHubClient();
                         if (eventHubClient != null)
-                        {
                             PageViewController.EventHubClientList.Add(eventHubClient);
-                        }
                         else
-                        {
                             break;
-                        }
                     }
                     return new[]
                     {
@@ -110,10 +119,8 @@ namespace Microsoft.AzureCat.Samples.PageViewWebService
                 }
                 catch (AggregateException ex)
                 {
-                    foreach (Exception e in ex.InnerExceptions)
-                    {
+                    foreach (var e in ex.InnerExceptions)
                         ServiceEventSource.Current.Message(e.Message);
-                    }
                     throw;
                 }
                 catch (Exception ex)
@@ -121,23 +128,20 @@ namespace Microsoft.AzureCat.Samples.PageViewWebService
                     ServiceEventSource.Current.Message(ex.Message);
                     throw;
                 }
-                Task.Delay(this.backoffDelay).Wait();
+                Task.Delay(backoffDelay).Wait();
             }
             throw new TimeoutException(RetryTimeoutExhausted);
         }
 
         /// <summary>
-        /// This is the main entry point for your service instance.
+        ///     This is the main entry point for your service instance.
         /// </summary>
         /// <param name="cancelServiceInstance">Canceled when Service Fabric terminates this instance.</param>
         protected override async Task RunAsync(CancellationToken cancelServiceInstance)
         {
             // This service instance continues processing until the instance is terminated.
             while (!cancelServiceInstance.IsCancellationRequested)
-            {
-                // Pause for 1 second before continue processing.
                 await Task.Delay(TimeSpan.FromSeconds(1), cancelServiceInstance);
-            }
         }
 
         #endregion
@@ -147,74 +151,58 @@ namespace Microsoft.AzureCat.Samples.PageViewWebService
         private void ReadSettings()
         {
             // Read settings from the DeviceActorServiceConfig section in the Settings.xml file
-            ICodePackageActivationContext activationContext = this.Context.CodePackageActivationContext;
-            ConfigurationPackage config = activationContext.GetConfigurationPackageObject(ConfigurationPackage);
-            ConfigurationSection section = config.Settings.Sections[ConfigurationSection];
+            var activationContext = Context.CodePackageActivationContext;
+            var config = activationContext.GetConfigurationPackageObject(ConfigurationPackage);
+            var section = config.Settings.Sections[ConfigurationSection];
 
             // Read the ServiceBusConnectionString setting from the Settings.xml file
-            ConfigurationProperty parameter = section.Parameters[ServiceBusConnectionStringParameter];
+            var parameter = section.Parameters[ServiceBusConnectionStringParameter];
             if (!string.IsNullOrWhiteSpace(parameter?.Value))
-            {
-                this.serviceBusConnectionString = parameter.Value;
-            }
+                serviceBusConnectionString = parameter.Value;
             else
-            {
                 throw new ArgumentException(
                     string.Format(ParameterCannotBeNullFormat, ServiceBusConnectionStringParameter),
                     ServiceBusConnectionStringParameter);
-            }
 
             // Read the EventHubName setting from the Settings.xml file
             parameter = section.Parameters[EventHubNameParameter];
             if (!string.IsNullOrWhiteSpace(parameter?.Value))
-            {
-                this.eventHubName = parameter.Value;
-            }
+                eventHubName = parameter.Value;
             else
-            {
                 throw new ArgumentException(
                     string.Format(ParameterCannotBeNullFormat, EventHubNameParameter),
                     EventHubNameParameter);
-            }
 
             // Read the EventHubClientNumber setting from the Settings.xml file
-            this.eventHubClientNumber = DefaultEventHubClientNumber;
+            eventHubClientNumber = DefaultEventHubClientNumber;
             parameter = section.Parameters[EventHubClientNumberParameter];
             if (!string.IsNullOrWhiteSpace(parameter?.Value))
-            {
-                int.TryParse(parameter.Value, out this.eventHubClientNumber);
-            }
+                int.TryParse(parameter.Value, out eventHubClientNumber);
 
             // Read the MaxRetryCount setting from the Settings.xml file
-            this.maxRetryCount = DefaultMaxRetryCount;
+            maxRetryCount = DefaultMaxRetryCount;
             parameter = section.Parameters[MaxQueryRetryCountParameter];
             if (!string.IsNullOrWhiteSpace(parameter?.Value))
-            {
-                int.TryParse(parameter.Value, out this.maxRetryCount);
-            }
+                int.TryParse(parameter.Value, out maxRetryCount);
 
             // Read the BackoffDelay setting from the Settings.xml file
-            this.backoffDelay = DefaultBackoffDelay;
+            backoffDelay = DefaultBackoffDelay;
             parameter = section.Parameters[BackoffDelayParameter];
             if (!string.IsNullOrWhiteSpace(parameter?.Value))
-            {
-                int.TryParse(parameter.Value, out this.backoffDelay);
-            }
+                int.TryParse(parameter.Value, out backoffDelay);
         }
 
         public EventHubClient CreateEventHubClient()
         {
-            if (string.IsNullOrWhiteSpace(this.serviceBusConnectionString) || string.IsNullOrWhiteSpace(this.eventHubName))
-            {
+            if (string.IsNullOrWhiteSpace(serviceBusConnectionString) || string.IsNullOrWhiteSpace(eventHubName))
                 return null;
-            }
-            MessagingFactory messagingFactory =
+            var messagingFactory =
                 MessagingFactory.CreateFromConnectionString(
-                    new ServiceBusConnectionStringBuilder(this.serviceBusConnectionString)
+                    new ServiceBusConnectionStringBuilder(serviceBusConnectionString)
                     {
                         TransportType = TransportType.Amqp
                     }.ToString());
-            return messagingFactory.CreateEventHubClient(this.eventHubName);
+            return messagingFactory.CreateEventHubClient(eventHubName);
         }
 
         #endregion
